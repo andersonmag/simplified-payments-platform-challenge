@@ -1,6 +1,6 @@
 package com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.entities;
 
-import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.dtos.TransferRequest;
+import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.enums.TransferType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,12 +29,15 @@ public class Transfer {
     private User payer;
     @Column(nullable = false)
     private BigDecimal value;
+    @Enumerated(EnumType.STRING)
+    private TransferType type = TransferType.TRANSFER;
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Transfer(TransferRequest transferRequest) {
-        this.value = transferRequest.value();
-        payer = new User(transferRequest.payer());
-        payee = new User(transferRequest.payee());
+    public Transfer(Long payerId, Long payeeId, BigDecimal value, TransferType type) {
+        this.value = value;
+        payer = new User(payerId);
+        payee = new User(payeeId);
+        this.type = type;
     }
 }

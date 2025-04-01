@@ -1,5 +1,6 @@
 package com.github.andersonmag.simplifiedpaymentsplatformchallenge.service;
 
+import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.dtos.DepositRequest;
 import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.dtos.NotificationSendResponse;
 import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.dtos.TransferRequest;
 import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.entities.Transfer;
@@ -59,6 +60,17 @@ public class TransferService {
         executorService.submit(this::sendNotificationAsync);
 
         return createdTransfer;
+    }
+
+    @Transactional
+    public void makeDeposit(final DepositRequest request) {
+        final var payee = getUserById(request.payee());
+
+        payee.setBalance(payee.getBalance().add(request.value()));
+        userRepository.save(payee);
+        repository.save(request.toModel());
+
+        executorService.submit(this::sendNotificationAsync);
     }
 
     private void sendNotificationAsync() {

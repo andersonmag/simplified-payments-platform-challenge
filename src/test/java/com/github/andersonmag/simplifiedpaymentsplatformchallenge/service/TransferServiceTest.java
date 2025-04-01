@@ -1,5 +1,6 @@
 package com.github.andersonmag.simplifiedpaymentsplatformchallenge.service;
 
+import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.dtos.DepositRequest;
 import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.dtos.NotificationSendResponse;
 import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.dtos.TransferRequest;
 import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.entities.Transfer;
@@ -136,6 +137,28 @@ class TransferServiceTest {
         });
     }
 
+    @Test
+    void shouldSaveDepositSuccessfully() {
+        final var request = getRequestDeposit(LOGISTIC_USER_ID);
+        var initialBalance = BigDecimal.valueOf(200.0);
+        var logisticUser = getUserByType(UserType.LOGISTIC, initialBalance);
+
+        when(userRepository.findById(LOGISTIC_USER_ID)).thenReturn(Optional.of(logisticUser));
+        when(requestService.sendNotification()).thenReturn(
+                new ResponseEntity<>(
+                        new NotificationSendResponse(String.valueOf(200), "Response message"),
+                        HttpStatusCode.valueOf(200)
+                )
+        );
+        when(transferRepository.save(any(Transfer.class))).thenReturn(request.toModel());
+
+        transferService.makeDeposit(request);
+
+        verify(transferRepository, times(1)).save(any(Transfer.class));
+        verify(userRepository, times(1)).save(any(User.class));
+        Assertions.assertEquals(initialBalance.add(request.value()), logisticUser.getBalance());
+    }
+
     private void mockBehaviorFromUsersFinding(BigDecimal initialBalancePayer) {
         when(userRepository.findById(COMMOM_USER_ID)).thenReturn(Optional.of(getUserByType(UserType.COMMON, initialBalancePayer)));
         when(userRepository.findById(LOGISTIC_USER_ID)).thenReturn(Optional.of(getUserByType(UserType.LOGISTIC, BigDecimal.ZERO)));
@@ -154,6 +177,10 @@ class TransferServiceTest {
 
     private TransferRequest getRequestTransfer(Long payer, Long payee) {
         return new TransferRequest(BigDecimal.valueOf(100.0), payer, payee);
+    }
+
+    private DepositRequest getRequestDeposit(Long payee) {
+        return new DepositRequest(BigDecimal.valueOf(100.0), payee);
     }
 
     private User getUserByType(UserType type, BigDecimal balance) {

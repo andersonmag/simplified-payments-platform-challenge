@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-public record TransferRequest(@NotNull @Min(value = 1) BigDecimal value, @NotNull Long payer, @NotNull Long payee) {
+public record DepositRequest(@NotNull @Min(value = 1) BigDecimal value, @NotNull Long payee) {
     public Transfer toModel() {
-        return new Transfer(payer, payee, value, TransferType.TRANSFER);
+        return new Transfer(null, payee, value, TransferType.DEPOSIT);
     }
 }
