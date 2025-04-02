@@ -9,6 +9,6 @@ import java.math.BigDecimal;
 
 public record TransferRequest(@NotNull @Min(value = 1) BigDecimal value, @NotNull Long payer, @NotNull Long payee) {
     public Transfer toModel() {
-        return new Transfer(payer, payee, value, TransferType.TRANSFER);
+        return new Transfer(payer, payee, value, TransferType.TRANSFER.name());
     }
 }

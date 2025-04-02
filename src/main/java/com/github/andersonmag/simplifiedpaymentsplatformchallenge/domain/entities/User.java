@@ -1,6 +1,5 @@
 package com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.entities;
 
-import com.github.andersonmag.simplifiedpaymentsplatformchallenge.domain.enums.UserType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +25,8 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
-    @Enumerated(EnumType.STRING)
-    private UserType type;
+    @Column(nullable = false, length = 10)
+    private String type;
     private BigDecimal balance = BigDecimal.ZERO;
 
     public User(Long id) {

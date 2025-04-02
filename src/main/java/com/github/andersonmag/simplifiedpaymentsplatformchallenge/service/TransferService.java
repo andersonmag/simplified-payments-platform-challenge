@@ -38,7 +38,7 @@ public class TransferService {
     @Transactional
     public Transfer makeTransfer(final TransferRequest request) {
         final var payer = getUserById(request.payer());
-        if (UserType.LOGISTIC == payer.getType()) {
+        if (Objects.equals(UserType.LOGISTIC.name(), payer.getType())) {
             throw new TransferNotAllowedException("Not allowed to transfer for this type user");
         }
 

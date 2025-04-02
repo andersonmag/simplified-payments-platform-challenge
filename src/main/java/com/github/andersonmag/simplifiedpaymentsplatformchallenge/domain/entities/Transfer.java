@@ -10,7 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Objects;
 
 @Entity
 @Table(name = "transfers")
@@ -20,23 +20,24 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class Transfer {
     @Id
-    private UUID id = UUID.randomUUID();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "payee_id")
     private User payee;
     @ManyToOne
     @JoinColumn(name = "payer_id")
     private User payer;
-    @Column(nullable = false)
+    @Column(name = "amount", nullable = false)
     private BigDecimal value;
-    @Enumerated(EnumType.STRING)
-    private TransferType type = TransferType.TRANSFER;
+    @Column(nullable = false, length = 10)
+    private String type = TransferType.TRANSFER.name();
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public Transfer(Long payerId, Long payeeId, BigDecimal value, TransferType type) {
+    public Transfer(Long payerId, Long payeeId, BigDecimal value, String type) {
         this.value = value;
-        payer = new User(payerId);
+        payer = Objects.isNull(payerId) ? null : new User(payerId);
         payee = new User(payeeId);
         this.type = type;
     }

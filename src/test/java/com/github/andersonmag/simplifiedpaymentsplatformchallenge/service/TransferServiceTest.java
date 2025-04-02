@@ -187,7 +187,7 @@ class TransferServiceTest {
         User user = new User();
         user.setId(UserType.LOGISTIC == type ? LOGISTIC_USER_ID : COMMOM_USER_ID);
         user.setName("User");
-        user.setType(type);
+        user.setType(type.name());
         user.setEmail("user@user.com");
         user.setDocument("00000000000");
         user.setPassword("password");
