@@ -58,9 +58,8 @@ class TransferServiceTest {
         when(userRepository.findById(LOGISTIC_USER_ID))
                 .thenReturn(Optional.of(getUserByType(UserType.LOGISTIC, BigDecimal.ZERO)));
 
-        final var exception = Assertions.assertThrows(TransferNotAllowedException.class, () -> {
-            transferService.makeTransfer(request);
-        });
+        final var exception = Assertions.assertThrows(TransferNotAllowedException.class,
+                () -> transferService.makeTransfer(request));
 
         Assertions.assertEquals("Not allowed to transfer for this type user", exception.getMessage());
     }
@@ -82,9 +81,8 @@ class TransferServiceTest {
 
         mockBehaviorFromUsersFinding(BigDecimal.valueOf(10.0));
 
-        final var exception = Assertions.assertThrows(TransferNotAllowedException.class, () -> {
-            transferService.makeTransfer(request);
-        });
+        final var exception = Assertions.assertThrows(TransferNotAllowedException.class,
+                () -> transferService.makeTransfer(request));
 
         Assertions.assertEquals("Enough balance to make transfer", exception.getMessage());
     }
@@ -97,9 +95,8 @@ class TransferServiceTest {
 
         when(requestService.requestAuthorization()).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(401)));
 
-        final var exception = Assertions.assertThrows(TransferNotAllowedException.class, () -> {
-            transferService.makeTransfer(request);
-        });
+        final var exception = Assertions.assertThrows(TransferNotAllowedException.class,
+                () -> transferService.makeTransfer(request));
 
         Assertions.assertEquals("Not autorized to make transfer", exception.getMessage());
     }
