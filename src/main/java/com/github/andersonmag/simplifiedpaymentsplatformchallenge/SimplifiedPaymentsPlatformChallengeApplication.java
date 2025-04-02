@@ -11,5 +11,4 @@ public class SimplifiedPaymentsPlatformChallengeApplication {
     public static void main(String[] args) {
         SpringApplication.run(SimplifiedPaymentsPlatformChallengeApplication.class, args);
     }
-
 }
